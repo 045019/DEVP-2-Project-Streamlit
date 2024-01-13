@@ -1,1 +1,6 @@
-# DEVP-2Project
+'''
+# HOW TO SETUP AND RUN
+
+
+
+'''
