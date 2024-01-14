@@ -83,6 +83,9 @@ animated_trendline = px.scatter(
     width=800,
     height=500
 )
+
+
+
 st.plotly_chart(animated_trendline)
 # Display the animated trendline chart
 if st.button("Start"):
