@@ -49,40 +49,8 @@ st.plotly_chart(sunburst_chart, use_container_width=True)
 
 
 
-st.subheader("Bar Race Chart - Total Sales by Retailer")
 
 
-# Create a placeholder for the bar race chart
-bar_race_chart = st.empty()
-# Bar Race Chart
-fig = px.bar(
-    df,
-    x=["Operating Profit"],
-    y="Retailer",
-    orientation="h",
-    text="Total Sales",
-    title=f"Total Sales Race for {selected_retailers} Monthly Numbers",
-    animation_frame="Month",
-    labels={"Total Sales": "Total Sales ($)"},
-)
-# Display the bar race chart
-bar_race_chart.plotly_chart(fig,use_container_width=True)
-# Simulate the race with a play button
-if st.button("Start Race"):
-    for i in range(1, len(filtered_df) + 1):
-        # Update the chart dynamically
-        fig = px.bar(
-            df.iloc[:i],
-            x="Total Sales",
-            y="Retailer",
-            orientation="h",
-            text="Total Sales",
-            title=f"Total Sales Race for {selected_retailers}",
-            labels={"Total Sales": "Total Revenue($)"},
-                  
-        )
-        bar_race_chart.plotly_chart(fig)
-          # Adjust the sleep duration as needed
 
 
 st.subheader("Market Share")
@@ -144,3 +112,39 @@ st.subheader('Advanced Scatter Plot Matrix')
 scatter_matrix = px.scatter_matrix(filtered_df, dimensions=["Retailer","Product","Total Sales", "State", "Operating Profit"], color='Operating Profit',
                                   title='Advanced Scatter Plot Matrix',width=1200, height=800)
 st.plotly_chart(scatter_matrix, use_container_width=True)
+
+
+
+
+st.subheader("Bar Race Chart - Total Sales by Retailer")
+# Create a placeholder for the bar race chart
+bar_race_chart = st.empty()
+# Bar Race Chart
+fig = px.bar(
+    df,
+    x=["Operating Profit"],
+    y="Retailer",
+    orientation="h",
+    text="Total Sales",
+    title=f"Total Sales Race for {selected_retailers} Monthly Numbers",
+    animation_frame="Month",
+    labels={"Total Sales": "Total Sales ($)"},
+)
+# Display the bar race chart
+bar_race_chart.plotly_chart(fig,use_container_width=True)
+# Simulate the race with a play button
+if st.button("Start Race"):
+    for i in range(1, len(filtered_df) + 1):
+        # Update the chart dynamically
+        fig = px.bar(
+            df.iloc[:i],
+            x="Total Sales",
+            y="Retailer",
+            orientation="h",
+            text="Total Sales",
+            title=f"Total Sales Race for {selected_retailers}",
+            labels={"Total Sales": "Total Revenue($)"},
+                  
+        )
+        bar_race_chart.plotly_chart(fig)
+          # Adjust the sleep duration as needed
