@@ -1,4 +1,4 @@
-import streamlit as st
+'''import streamlit as st
 import pandas as pd
 import plotly.express as px
 
@@ -75,4 +75,4 @@ animated_trendline_cumulative = px.scatter(
 
 # Display the animated trendline chart
 if st.button("Start"):
-    animated_trendline_place.plotly_chart(animated_trendline_cumulative)
+    animated_trendline_place.plotly_chart(animated_trendline_cumulative)'''
