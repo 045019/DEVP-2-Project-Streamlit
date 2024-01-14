@@ -56,7 +56,7 @@ st.subheader("Bar Race Chart - Total Sales by Retailer")
 bar_race_chart = st.empty()
 # Bar Race Chart
 fig = px.bar(
-    filtered_df,
+    df,
     x=["Operating Profit"],
     y="Retailer",
     orientation="h",
@@ -72,7 +72,7 @@ if st.button("Start Race"):
     for i in range(1, len(filtered_df) + 1):
         # Update the chart dynamically
         fig = px.bar(
-            filtered_df.iloc[:i],
+            df.iloc[:i],
             x="Total Sales",
             y="Retailer",
             orientation="h",
@@ -102,7 +102,7 @@ st.subheader('Retailer Sales Trendline Animation')
 animated_trendline_place=st.empty()
 # Animated trendline chart
 animated_trendline = px.scatter(
-    filtered_df.groupby(['Invoice Date','Product','Year','Month','Day', 'Retailer', 'Operating Profit'])['Total Sales'].sum().reset_index(),
+    df.groupby(['Invoice Date','Product','Year','Month','Day', 'Retailer', 'Operating Profit'])['Total Sales'].sum().reset_index(),
     x='Operating Profit',
     y='Total Sales',
     color='Retailer',
@@ -120,7 +120,7 @@ st.plotly_chart(animated_trendline)
 if st.button("Start"):
     for i in range(1, len(filtered_df) + 1):
         animated_trendline = px.scatter(
-        filtered_df.iloc[:i],
+        df.iloc[:i],
         x='Operating Profit',
         y='Total Sales',
         color='Retailer',
