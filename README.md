@@ -1,6 +1,7 @@
 '''
-# HOW TO SETUP AND RUN
+# How to run the app
+Use the given URL to access the streamlit dashboard hosted on my current server
+https://devp-2project-adidas-sales-dashboard.streamlit.app/
 
-
-
+This repository belongs to Roll No. 045019 (Himanshi Saxena) from PGDM, BDA-04
 '''
