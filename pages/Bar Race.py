@@ -52,3 +52,27 @@ if st.button("Start Race"):
         )
         bar_race_chart.plotly_chart(fig)
           # Adjust the sleep duration as needed
+
+
+
+st.subheader('Cumulative Retailer Sales Trendline Animation')
+animated_trendline_place = st.empty()
+
+# Animated trendline chart for cumulative sales comparison
+animated_trendline_cumulative = px.scatter(
+    df,
+    x='Total Sales',
+    y='Cumulative Total Sales',
+    color='Retailer',
+    title='Cumulative Retailer Sales Trendline',
+    labels={'Cumulative Total Sales': 'Cumulative Sales'},
+    animation_frame='Total Sales',
+    animation_group='Retailer',
+    width=800,
+    height=500,
+    trendline='ols'  # Ordinary Least Squares trendline
+)
+
+# Display the animated trendline chart
+if st.button("Start"):
+    animated_trendline_place.plotly_chart(animated_trendline_cumulative)
