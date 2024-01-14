@@ -28,11 +28,23 @@ st.write(''' Welcome To Adidas US Sales Dashboard''')
 
 
 df=load_data('./AdidasUSSales.xlsx')
+df.dropna()
+# Convert 'Invoice Date' to datetime
+df['Invoice Date'] = pd.to_datetime(df['Invoice Date'])
+df['Cumulative Total Sales'] = df.groupby('Retailer')['Total Sales'].cumsum()
+df['Cumulative Total Sales Month Wise']=df.groupby('Month')['Total Sales'].cumsum()
+df['Cumulative Sales State Wise']=df.groupby('State')['Total Sales'].cumsum()
+df['Operating Profit State Wise']=df.groupby('State')['Operating Profit'].cumsum()
+# Convert numeric columns to numeric types
+numeric_columns = ['Price per Unit', 'Units Sold', 'Total Sales', 'Operating Profit', 'Operating Margin']
+df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric, errors='coerce')
+
 with st.expander("Data Preview"):
     st.dataframe(df)
 st.write('''
          USE THE FOLLOWING TAB FOR FILTERING RETAILER WISE
          ''')
+
 
 # Select retailer for the bar race chart
 selected_retailers = st.multiselect("Select Retailers", df["Retailer"].unique(), default=df["Retailer"].unique())
@@ -40,24 +52,35 @@ selected_retailers = st.multiselect("Select Retailers", df["Retailer"].unique(),
 # Filter DataFrame based on selected retailers
 filtered_df = df[df["Retailer"].isin(selected_retailers)].sort_values(by="Total Sales", ascending=False)
 
-
-
-
-
+col1, col2 = st.columns(2,gap="medium")
 # Sunburst Chart
-st.subheader('Retailer Wise Categorical Sunburst Chart')
-sunburst_chart = px.sunburst(filtered_df, path=['Retailer', 'Product'], values='Total Sales',
-                             title='Sunburst Chart')
-st.plotly_chart(sunburst_chart, use_container_width=True)
+with col1:
+    st.subheader('Interactive Sunburst Chart')
+    sunburst_chart = px.sunburst(filtered_df, path=['Retailer', 'Product'], values='Total Sales',
+                                 title='Sunburst Chart')
+    st.plotly_chart(sunburst_chart, use_container_width=True)
 
-
+# Market Share Pie Chart
+with col2:
+    st.subheader("Market Share")
+    # Group the data by retailer and sum the total sales for each retailer
+    retailer_sales = filtered_df.groupby('Retailer')['Total Sales'].sum()
+    # Calculate the total sales of all retailers
+    total_sales = retailer_sales.sum()
+    # Calculate the market share of each retailer by dividing their total sales by the total sales of all retailers
+    market_share = retailer_sales / total_sales
+    # Create a pie chart using plotly
+    fig = px.pie(market_share, values=market_share, names=market_share.index, title='Market Share of Retailers')
+    # Show the plot
+    st.plotly_chart(fig)
 
 st.subheader("Bar Race Chart - Total Sales by Retailer")
+
 # Create a placeholder for the bar race chart
 bar_race_chart = st.empty()
 # Bar Race Chart
 fig = px.bar(
-    df,
+    filtered_df,
     x=["Operating Profit"],
     y="Retailer",
     orientation="h",
@@ -72,8 +95,8 @@ bar_race_chart.plotly_chart(fig,use_container_width=True)
 if st.button("Start Race"):
     for i in range(1, len(filtered_df) + 1):
         # Update the chart dynamically
-        fig = px.bar(
-            df.iloc[:i],
+        updated_race = px.bar(
+            filtered_df.iloc[:i],
             x="Total Sales",
             y="Retailer",
             orientation="h",
@@ -82,74 +105,50 @@ if st.button("Start Race"):
             labels={"Total Sales": "Total Revenue($)"},
                   
         )
-        bar_race_chart.plotly_chart(fig)
-          # Adjust the sleep duration as needed
+        bar_race_chart.plotly_chart(updated_race)    
+        
 
+yearly_sales = df.groupby(['Year','Month'])['Total Sales'].sum().reset_index()
+yearly_profit = df.groupby(['Year','Month'])['Operating Profit'].sum().reset_index()
+st.subheader('Monthly Total Sales and Profit Over Years')
 
+# Create two columns for layout
+col1, col2 = st.columns(2,gap ="medium")
 
-st.subheader("Market Share")
-# Group the data by retailer and sum the total sales for each retailer
-retailer_sales = filtered_df.groupby('Retailer')['Total Sales'].sum()
-# Calculate the total sales of all retailers
-total_sales = retailer_sales.sum()
-# Calculate the market share of each retailer by dividing their total sales by the total sales of all retailers
-market_share = retailer_sales / total_sales
-# Create a pie chart using plotly
-fig = px.pie(market_share, values=market_share, names=market_share.index, title='Market Share of Retailers')
-# Show the plot
-st.plotly_chart(fig)
-
-
-st.subheader('Retailer Sales Trendline Animation')
-animated_trendline_place=st.empty()
-# Animated trendline chart
-animated_trendline = px.scatter(
-    df.groupby(['Invoice Date','Product','Year','Month','Day', 'Retailer', 'Operating Profit'])['Total Sales'].sum().reset_index(),
-    x='Operating Profit',
+# Line chart for monthly total sales over years
+line_chart_sales = px.line(
+    yearly_sales,
+    x='Month',
     y='Total Sales',
-    color='Retailer',
-    trendline='ols',  # Ordinary Least Squares trendline
-    title='Retailer Sales Trendline',
-    labels={'Total Sales': 'Sales'},
-    animation_frame='Year',
-    
-    animation_group='Retailer',
-    width=800,
-    height=500
+    color='Year',
+    title='Monthly Total Sales Over Years',
+    markers=True,
+    template="simple_white"
 )
 
+# Display the sales line chart using col1.plotly_chart
+col1.plotly_chart(line_chart_sales,)
 
-
-st.plotly_chart(animated_trendline)
-# Display the animated trendline chart
-if st.button("Start"):
-    for i in range(1, len(filtered_df) + 1):
-        animated_trendline = px.scatter(
-        df.iloc[:i],
-        x='Operating Profit',
-        y='Total Sales',
-        color='Retailer',
-        trendline='ols',  # Ordinary Least Squares trendline
-        title='Retailer Sales Trendline',
-        labels={'Total Sales': 'Sales'},
-        animation_frame='Year',
-    
-    animation_group='Retailer',
-    width=800,
-    height=500
+# Line chart for monthly total profit over years
+line_chart_profit = px.line(
+    yearly_profit,
+    x='Month',
+    y='Operating Profit',
+    color='Year',
+    title='Monthly Total Profit Over Years',
+    markers=True,
+    template="simple_white"
+   
 )
-        animated_trendline_place.plotly_chart(animated_trendline)
 
-
-
-
+# Display the profit line chart using col2.plotly_chart
+col2.plotly_chart(line_chart_profit)
 
 # Advanced Scatter Plot Matrix
 st.subheader('Advanced Scatter Plot Matrix')
-scatter_matrix = px.scatter_matrix(filtered_df, dimensions=["Retailer","Product","Total Sales", "State", "Operating Profit"], color='Operating Profit',
-                                  title='Advanced Scatter Plot Matrix',width=1200, height=800)
+scatter_matrix = px.scatter_matrix(df, dimensions=["Retailer","Product","Cumulative Sales State Wise", "State"], color='Operating Profit State Wise',
+                                  title='Advanced Scatter Plot Matrix',width=1200, height=1000)
 st.plotly_chart(scatter_matrix, use_container_width=True)
-
 
 
 
