@@ -4,6 +4,7 @@ import inspect
 import textwrap
 import plotly_express as px
 
+
 def show_code(demo):
     """Showing the code of the demo."""
     show_code = st.sidebar.checkbox("Show code", True)
@@ -148,7 +149,3 @@ st.subheader('Advanced Scatter Plot Matrix')
 scatter_matrix = px.scatter_matrix(df, dimensions=["Retailer","Product","Cumulative Sales State Wise", "State"], color='Operating Profit State Wise',
                                   title='Advanced Scatter Plot Matrix',width=1200, height=1000)
 st.plotly_chart(scatter_matrix, use_container_width=True)
-
-
-
-
