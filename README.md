@@ -15,17 +15,13 @@ https://devp2-adidas-sales-dashboard.streamlit.app/
 * ## Submission folder consists of :
 * AdidasUSSales.xlsx : The excel file exported after performing data cleaning. This file was used to create DATA PREVIEW and multiple graphs of the dashboard.
 * Adidas_sales_data.ipynb : The notebook which contains the compiled codes, analysis, report and screenshots. This file is not supposed to be RUN!
-* 1.JPG,2.JPG,3.JPG,4.jpg,5.jpg,6.1.jpg,6.2.jpg,7.jpg,8.1.jpg,8.2.jpg,9.jpg : These are the screenshots of the dashboard attached as evidence for the analysis. 
+* 1.JPG,2.JPG,3.JPG,4.jpg,5.jpg,6.1.jpg,6.2.jpg,7.jpg,8.1.jpg,8.2.jpg,9.jpg : These are the screenshots of the dashboard attached as evidence for the analysis.
 
 
-
-
-
-
-
-
-
-
+## Interactive Elements in the Dashboard :
+* Select Retailers (Filtering Tab): Use the following tab for filtering the data retailer wise and see the parameters of the dashboard change accordingly.
+* Interactive Sunburst Chart: Click on a specific retailer to see their product offerings along with the statistics, as you hover over each element.
+* Bar Race Chart - Total Sales by Retailer: Click on 'Start Race' to see a run-down of the total sales of all retailers with operating profit as the variable.
 
 
 
